@@ -20,7 +20,6 @@ model User{
   type Type @default(user)
 
   token Int @default(0)
-  // hamza String @default("dasdas")
 
   @@map("users")
   @@unique([email, password,type])
@@ -39,6 +38,8 @@ model UserToken{
   invoke Int?
 
   @@map("userTokens")
+    @@unique([routeId, userId])
+
 }
 model Route{
   id Int @id @default(autoincrement())

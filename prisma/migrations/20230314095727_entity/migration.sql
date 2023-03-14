@@ -24,6 +24,7 @@ CREATE TABLE `userTokens` (
 
     UNIQUE INDEX `userTokens_routeId_key`(`routeId`),
     UNIQUE INDEX `userTokens_userId_key`(`userId`),
+    UNIQUE INDEX `userTokens_routeId_userId_key`(`routeId`, `userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

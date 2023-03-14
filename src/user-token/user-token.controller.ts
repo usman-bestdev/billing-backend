@@ -13,10 +13,18 @@ export class UserTokenController {
 
   @Post()
   async userToken(@Req() request: Request, @Body() body: UserToken) {
-    const { userId } = await this.auth.verifyUserToken(
+    const { id } = await this.auth.verifyUserToken(
+      request.cookies?.accessToken,
+    );
+    return this.tokenService.invokeToken(body, id);
+  }
+
+  @Post('add')
+  async addToken(@Req() request: Request, @Body() body: { token: number }) {
+    const { id } = await this.auth.verifyUserToken(
       request.cookies?.accessToken,
     );
 
-    return this.tokenService.invokeToken(body, userId);
+    return this.tokenService.addToken(id, body.token);
   }
 }
