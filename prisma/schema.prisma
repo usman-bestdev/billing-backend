@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email String @unique
+  password String
+  type Type @default(user)
+
+  token Int @default(0)
+  // hamza String @default("dasdas")
+
+  @@map("users")
+  @@unique([email, password,type])
+}
+enum Type {
+  user
+  admin
+}
+model UserToken{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  routeId Int? @unique
+  userId Int? @unique
+  invoke Int?
+
+  @@map("userTokens")
+}
+model Route{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title String @unique
+
+  cost Int @default(0)
+  @@map("routes")
+}
