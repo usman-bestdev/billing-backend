@@ -28,4 +28,22 @@ export class UserService {
       throw new ForbiddenException(error.message);
     }
   }
+  async admin() {
+    try {
+      const user = await this.prisma.user.findMany({
+        include: {
+          userTokens: {
+            include: { route: true },
+          },
+        },
+        where: {
+          type: 'user',
+        },
+      });
+      if (user) return user;
+      else throw new UnauthorizedException('fail');
+    } catch (error) {
+      throw new ForbiddenException(error.message);
+    }
+  }
 }
