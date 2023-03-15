@@ -1,11 +1,13 @@
 import { PrismaService } from './../prisma/prisma.service';
 import {
   ForbiddenException,
+  HttpException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { User } from 'src/validator/user.validator';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +32,6 @@ export class AuthService {
       });
       if (user) return user;
       else throw new UnauthorizedException('invalid credentials');
-      // return await this.generateToken(user.id, user.email, user.type);
     } catch (error) {
       throw new ForbiddenException(error.message);
     }
@@ -40,23 +41,35 @@ export class AuthService {
     return await this.jwtService.signAsync(payload);
   }
 
-  async verifyUserToken(token: string) {
+  async verifyUserToken(token: string, response: Response) {
     try {
       let value = await this.jwtService.verifyAsync(token);
       if (value.type == 'user') return value;
-      else throw new UnauthorizedException('unAuthorise');
+      else {
+        console.log('shdlkaldjaskdaj');
+        this.logout(response);
+        throw new HttpException('unAuthorise', 444);
+      }
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      this.logout(response);
+      throw new HttpException(error.message, 444);
     }
   }
 
-  async verifyAdminToken(token: string) {
+  async verifyAdminToken(token: string, response: Response) {
     try {
       let value = await this.jwtService.verifyAsync(token);
       if (value.type == 'admin') return value;
-      else throw new UnauthorizedException('unAuthorise');
+      else {
+        this.logout(response);
+        throw new HttpException('Invalid Token', 444);
+      }
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw new HttpException(error.message, 444);
     }
+  }
+
+  logout(response: Response) {
+    response.clearCookie('accessToken');
   }
 }

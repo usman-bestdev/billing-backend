@@ -11,9 +11,13 @@ export class UserController {
     private authService: AuthService,
   ) {}
   @Get('')
-  async user(@Req() request: Request) {
+  async user(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     let user = await this.authService.verifyUserToken(
       request.cookies?.accessToken,
+      response,
     );
     return this.userService.user(user.id);
   }
