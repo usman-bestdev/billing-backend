@@ -7,6 +7,14 @@ import { Request, Response } from 'express';
 @Controller('route')
 export class RouteController {
   constructor(private routeService: RouteService, private auth: AuthService) {}
+  @Get('admin')
+  async getAdminRoutes(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.auth.verifyAdminToken(request.cookies?.accessToken, response);
+    return await this.routeService.getAdminRoute();
+  }
   @Get()
   async getRoutes(
     @Req() request: Request,
@@ -16,7 +24,7 @@ export class RouteController {
       request.cookies?.accessToken,
       response,
     );
-    return this.routeService.getRoute(id);
+    return await this.routeService.getRoute(id);
   }
 
   @Post()
@@ -29,8 +37,12 @@ export class RouteController {
 
     return this.routeService.createRoute(body);
   }
-  @Put()
-  updateRouter(@Body() body: UpdateRoute) {
-    return this.routeService.updateRoute(body);
+  @Put('admin')
+  async updateRouter(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.auth.verifyAdminToken(request.cookies?.accessToken, response);
+    return await this.routeService.updateRoute(request.body);
   }
 }

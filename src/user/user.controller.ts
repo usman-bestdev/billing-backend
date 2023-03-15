@@ -7,20 +7,25 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(
-      private userService: UserService,
-      private authService: AuthService,
+    private userService: UserService,
+    private authService: AuthService,
   ) {}
   @Get('')
-  async user(@Req() request: Request, @Req() body: any,  @Res() response: Response) {
-    const { type } = body.query;
+  async user(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { type } = request.query;
     let user = null;
     if (type == 'admin') {
       user = await this.authService.verifyAdminToken(
-          request.cookies?.accessToken, response
+        request.cookies?.accessToken,
+        response,
       );
     } else {
       user = await this.authService.verifyUserToken(
-          request.cookies?.accessToken, response
+        request.cookies?.accessToken,
+        response,
       );
     }
     return this.userService.user(user.id);
@@ -31,9 +36,13 @@ export class UserController {
    * @param request
    */
   @Get('admin')
-  async admin(@Req() request: Request, @Res() response: Response) {
+  async admin(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     const admin = await this.authService.verifyAdminToken(
-        request.cookies?.accessToken, response
+      request.cookies?.accessToken,
+      response,
     );
     return this.userService.admin();
   }

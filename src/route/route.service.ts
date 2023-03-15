@@ -23,6 +23,21 @@ export class RouteService {
     }
   }
 
+  async getAdminRoute() {
+    try {
+      const user = await this.prisma.route.findMany({
+        select: {
+          id: true,
+          title: true,
+          cost: true,
+        },
+      });
+
+      return user;
+    } catch (error) {
+      throw new ForbiddenException(error.message);
+    }
+  }
   async createRoute(body: Route) {
     const { title, cost } = body;
     try {
@@ -44,18 +59,16 @@ export class RouteService {
     }
   }
   async updateRoute(body: UpdateRoute) {
-    const { title, cost, id } = body;
+    const { cost, id } = body;
     try {
       const user = await this.prisma.route.update({
         where: {
           id,
         },
         data: {
-          title,
           cost,
         },
       });
-
       return user;
     } catch (error) {
       throw new ForbiddenException(error.message);
