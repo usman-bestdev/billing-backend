@@ -10,6 +10,12 @@ import { UserToken } from 'src/validator/userToken.validator';
 export class UserTokenService {
   constructor(private prisma: PrismaService) {}
 
+  async getInvokedToken(userId: number) {
+    return await this.prisma.userToken.findMany({
+      include: { route: true },
+      where: { userId },
+    });
+  }
   async invokeToken(body: UserToken, userId: number) {
     const { routeId } = body;
     let record = null;
@@ -49,7 +55,7 @@ export class UserTokenService {
           });
         }
       } else {
-        throw new ForbiddenException('token is not valid');
+        throw new ForbiddenException('Please add token first');
       }
 
       return record;

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { UserToken } from 'src/validator/userToken.validator';
@@ -10,6 +10,14 @@ export class UserTokenController {
     private tokenService: UserTokenService,
     private auth: AuthService,
   ) {}
+
+  @Get()
+  async getUserToken(@Req() request: Request) {
+    const { id } = await this.auth.verifyUserToken(
+      request.cookies?.accessToken,
+    );
+    return this.tokenService.getInvokedToken(id);
+  }
 
   @Post()
   async userToken(@Req() request: Request, @Body() body: UserToken) {

@@ -20,7 +20,7 @@ model User{
   type Type @default(user)
 
   token Int @default(0)
-
+  userTokens UserToken[]
   @@map("users")
   @@unique([email, password,type])
 }
@@ -32,9 +32,10 @@ model UserToken{
   id Int @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  routeId Int? @unique
-  userId Int? @unique
+  route Route @relation(fields: [routeId],references: [id])
+  routeId Int
+  user User @relation(fields: [userId],references: [id])
+  userId Int
   invoke Int?
 
   @@map("userTokens")
@@ -49,5 +50,7 @@ model Route{
   title String @unique
 
   cost Int @default(0)
+    userTokens UserToken[]
+
   @@map("routes")
 }

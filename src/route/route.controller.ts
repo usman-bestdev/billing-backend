@@ -9,7 +9,9 @@ export class RouteController {
   constructor(private routeService: RouteService, private auth: AuthService) {}
   @Get()
   async getRoutes(@Req() request: Request) {
-    await this.auth.verifyUserToken(request.cookies?.accessToken);
+    const { id } = await this.auth.verifyUserToken(
+      request.cookies?.accessToken,
+    );
     return this.routeService.getRoute();
   }
 
