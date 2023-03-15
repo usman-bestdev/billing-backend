@@ -46,7 +46,6 @@ export class AuthService {
       let value = await this.jwtService.verifyAsync(token);
       if (value.type == 'user') return value;
       else {
-        console.log('shdlkaldjaskdaj');
         this.logout(response);
         throw new HttpException('unAuthorise', 444);
       }
