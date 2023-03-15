@@ -12,7 +12,7 @@ export class RouteController {
     const { id } = await this.auth.verifyUserToken(
       request.cookies?.accessToken,
     );
-    return this.routeService.getRoute();
+    return this.routeService.getRoute(id);
   }
 
   @Post()

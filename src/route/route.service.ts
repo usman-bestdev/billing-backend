@@ -6,14 +6,15 @@ import { Route, UpdateRoute } from 'src/validator/route.validator';
 export class RouteService {
   constructor(private prisma: PrismaService) {}
 
-  async getRoute() {
+  async getRoute(id: number) {
     try {
       const user = await this.prisma.route.findMany({
-        select: {
-          id: true,
-          title: true,
-          cost: true,
-        },
+        include: { userTokens: { where: { userId: id } } },
+        // select: {
+        //   id: true,
+        //   title: true,
+        //   cost: true,
+        // },
       });
 
       return user;
